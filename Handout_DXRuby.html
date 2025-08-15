@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Handout_DXRuby.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="graphical-interactive-programming-with-ruby-for-beginners">Graphical interactive programming with Ruby for beginners</h1>
+<p>Makoto Kobayashi &amp; Chihoko Aoki<br>
+Tsukuba Univ. of Technology, Japan</p>
+<h2 id="abstract">Abstract</h2>
+<p>This Workshop aims to learn and enjoy how to install ruby and DXRuby, how to program simple graphical software.<br>
+Ruby is an object oriented scripting language. You don't need to care for indent like a python. <br>
+DXRuby is an extention library for ruby only with Windows Direct X.</p>
+<h2 id="how-to-install-ruby">How to install ruby</h2>
+<h3 id="download-a-file">Download a file</h3>
+<ul>
+<li>Go to <a href="https://rubyinstaller.org/downloads/archives/">Archive web site</a> and find version &quot;3.0.0&quot; &quot;x86&quot;
+without Devkit, installer.<br>
+The direct link is <a href="https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.0.0-1/rubyinstaller-3.0.0-1-x86.exe">THIS ONE:rubyinstaller-3.0.0-1-x86.exe</a></li>
+<li>Download above file and go to next section.
+<ul>
+<li>The reason why we select &quot;3.0.0&quot; is that, DXRuby supports up to 3.0.</li>
+<li>The reason why we select &quot;x86&quot; is that, only x86 can use sound function (playing WAVE file, MIDI file, etc. x64 does not produce error but it does NOT play sound.)</li>
+</ul>
+</li>
+</ul>
+<h3 id="run-installer">Run installer</h3>
+<ul>
+<li>Run the downloaded file and accept license condition, then press the &quot;Next&quot; button.</li>
+<li><strong>CHANGE INSTALL PLACE</strong> to WHERE YOU HAVE PRIVILEGE to WRITE.
+<ul>
+<li>Change the &quot;C&quot; to &quot;H&quot;. It means &quot;H:Ruby30&quot;</li>
+<li>Or, &quot;C:\Users\Your_User_Name\Ruby30&quot; and so on.</li>
+<li>At your home, with your own PC with administrator privilege, you don't need to change it.</li>
+</ul>
+</li>
+<li><strong>CHECK ON</strong> the &quot;Add Ruby executables to your PATH&quot; checkbox.</li>
+<li><strong>UNCHECK</strong> &quot;Associate .rb and .rbw files with this Ruby installation&quot; checkbox.</li>
+<li>Press &quot;Install&quot; button.</li>
+<li>If you don't need documentation, UNCHECK the documentation file installation.</li>
+<li>Press &quot;Next&quot; button.</li>
+<li>Files are extracted and I hope path settings are added to the PATH parameter.</li>
+<li>You don't need to install MSYS2 now.
+<strong>UNCHECK</strong> the MSYS2 Installation checkbox, pless &quot;Finish&quot; button.</li>
+</ul>
+<h3 id="check-the-installed-state">Check the installed state</h3>
+<ul>
+<li>Win+r, &quot;cmd&quot; to run a command prompt.</li>
+<li>Input the command of &quot;ruby -v&quot; in the command prompt window, and hit Enter key.</li>
+<li>If the answer like &quot;ruby 3.0.0p0 (2020-.....&quot; is comming, installation is successfully finished. Congrats!</li>
+<li>Additional check:
+<ul>
+<li>Input &quot;irb&quot; in the command prompt.</li>
+<li>If the interactive ruby will run and prompt would appear, it is OK.</li>
+<li>Input &quot;exit&quot; and press the Enter key to exit irb environment.</li>
+</ul>
+</li>
+</ul>
+<h2 id="how-to-install-dxruby">How to install DXRuby</h2>
+<h3 id="dxruby-library-installation">DXRuby library  installation</h3>
+<ul>
+<li>Keep open the command prompt window (or open the command prompt again if you close it)</li>
+<li>Check your internet connection works.</li>
+<li>Input the command of &quot;<strong>gem install dxruby</strong>&quot;, and hit Enter key.</li>
+<li>If multiple messages appear and the last one would say “1 gem installed,” the installation is successful.</li>
+</ul>
+<h3 id="copy-the-directx-file">Copy the DirectX file</h3>
+<ul>
+<li>Copy the file named &quot;d3dx9_40.dll&quot; in the Workshop Folder.</li>
+<li>Paste at the &quot;bin&quot; folder in the installed folder. (H:\Ruby\bin)</li>
+</ul>
+<h4 id="option-at-home-download-directx-file-%22d3dx940dll%22">Option at home: Download DirectX File (&quot;d3dx9_40.dll&quot;)</h4>
+<p>In this Workhsop, I prepare the file but in case  you lose the dll file at your home, this section explain how to download this file.</p>
+<p>The only we need is &quot;d3dx9_40.dll&quot; but if you fetch this file, you need to download all Zip file.</p>
+<ul>
+<li>Go to <a href="https://www.microsoft.com/en-us/download/details.aspx?id=8109">Microsoft download site</a> and download whole file.</li>
+<li>Run &quot;directx_Jun2010_redist.exe&quot; and indicate APPROPREATE folder to extract it. (ex. C:\TEMP or somewhere you can use.)</li>
+<li>Find &quot;Nov2008_d3dx9_40_x86.cab&quot; and open it with explorer.</li>
+<li>Find &quot;d3dx9_40.dll&quot; inside of the cab file.</li>
+<li>Extract this dll file with drag &amp; drop or copy &amp; pasete. to another place.</li>
+<li>Now you can get  &quot;d3dx9_40.dll&quot; for x86.</li>
+</ul>
+<h4 id="option-at-home-copy-the-directx-dll-file-to-window-system-folder">Option at home: Copy The DirectX DLL File to Window system folder</h4>
+<p>If you use your own PC, the dll file should be move to the system folder.
+In general, &quot;C:\Windows\SysWOW64&quot; folde is for x86 DLL.</p>
+<h2 id="check-your-environment">Check your environment</h2>
+<ul>
+<li>Win+R, &quot;cmd&quot;</li>
+<li>Input &quot;irb&quot;, wait a moment....</li>
+<li>Input &quot;require 'dxruby'&quot;
+(irb(main):001:0&gt;require 'dxruby')</li>
+</ul>
+<p>If &quot;true&quot; will be comming, dxruby is safely installed. Congrats and Welcome to the DXRuby world!</p>
+<hr>
+<h2 id="reference-manual-and-api-reference-in-japanese">Reference Manual and API Reference (in Japanese)</h2>
+<p>To start DXRuby, you can use the well organized <a href="https://mirichi-github-io.translate.goog/dxruby-doc/index.html?_x_tr_sl=ja&amp;_x_tr_tl=en&amp;_x_tr_hl=ja&amp;_x_tr_pto=wapp">official Reference Manual</a>. <br>
+This workshop is based on this reference manual. <br>
+We will learn mainly with <a href="https://mirichi-github-io.translate.goog/dxruby-doc/tutorial/basic.html?_x_tr_sl=ja&amp;_x_tr_tl=en&amp;_x_tr_hl=ja&amp;_x_tr_pto=wapp">Basic tutolial of DXRuby</a>  and  <a href="https://mirichi-github-io.translate.goog/dxruby-doc/tutorial/sprite.html?_x_tr_sl=ja&amp;_x_tr_tl=en&amp;_x_tr_hl=ja&amp;_x_tr_pto=wapp">Tutorial for using Sprite</a>.<br>
+If you would like to study more, <a href="https://download-eastback-co-jp.translate.goog/dxruby/api/index.html?_x_tr_sl=ja&amp;_x_tr_tl=en&amp;_x_tr_hl=ja&amp;_x_tr_pto=wapp">API references</a> is also can be refered.</p>
+<h2 id="basic-of-dxruby">Basic of DXRuby</h2>
+<h3 id="create-a-work-folder">Create a work folder</h3>
+<ul>
+<li>Open the command prompt if you close it. (Win+r, &quot;cmd&quot;)</li>
+<li>To change the drive, input &quot;h:&quot;, and hit Enter key.</li>
+<li>To make your working folder/directory, input &quot;md graphic&quot; (the name is arbitrary.)</li>
+<li>To change the current folder, input &quot;cd graphic&quot;
+<ul>
+<li>Try to use Tab key to complement the file name. After input &quot;cd g&quot;, just hit the Tab key.</li>
+</ul>
+</li>
+</ul>
+<h3 id="open-your-window">Open your WINDOW!</h3>
+<h4 id="prepare-your-program-source-code">Prepare your program source code</h4>
+<p>Input next codes with your editor software and save with appropreate name like &quot;1_fststep.rb&quot; or any file name you want.</p>
+<ul>
+<li>Open the command prompt and go to your working folder/directory.
+<ul>
+<li>Win+R, &quot;cmd&quot;, hit Enter, &quot;h:&quot;, hit Enter, &quot;cd g&quot;, hit Tab key, hit Enter key.</li>
+</ul>
+</li>
+<li>&quot;notepad 1_fststep.rb&quot; and press &quot;Yes&quot; button.</li>
+<li>Copy &amp; Paste the program code below.</li>
+<li>Save the file with pressing Ctrl+s.</li>
+</ul>
+<pre class="hljs"><code><div>require 'dxruby'
+Window.loop do
+  #Write your code here.
+end
+</div></code></pre>
+<p>Instead of go to the working folder after open the command line, you can directly open the command line using explorer(Win+e). <br>
+At first, go to the working folder with explorer, and</p>
+<ul>
+<li>Press &quot;Alt + D&quot; to move the Address Area.</li>
+<li>Input &quot;cmd&quot; and hit Enter key.</li>
+</ul>
+<p>The command prompt automatically appeared and the current directory(folder) is explorer folder.</p>
+<h4 id="run-your-program">Run your program</h4>
+<p>After that, change the apprecation from notepad to command prompt with &quot;Alt + Tab&quot; and input next command to run your program.</p>
+<p>&quot;ruby 1_fststep.rb&quot;</p>
+<p>When input the progam file name, hitting Tab key supports to input the whole file name, same as when you used &quot;cd&quot; command above. <br>
+You don't have to input all the characters of the file name but only first or second character(s) and hit Tab key to complement the file name.\</p>
+<p>After run your program, you can confirmed that the black window is appears.<br>
+Let's move to the next step.</p>
+<h3 id="loading-an-image-file-and-move-it">Loading an Image file and move it</h3>
+<p>Add image loading code and setting codes of Window size before the line of &quot;Window.loop do&quot;
+And add window drawing code between &quot;loop&quot; and &quot;end.&quot;
+Or, just Copy all of the code.</p>
+<pre class="hljs"><code><div>require 'dxruby'
+image = Image.load('data.png')  # loading the 'data.png'
+Window.width=640;Window.height=480  # Window settings
+Window.loop do
+  Window.draw(100, 100, image)  # draw the image at (100,100)
+end
+</div></code></pre>
+<p>After editing these lines, save the file with Ctrl+s and run it again.</p>
+<p>Now you have got skills to show your own image file. You can prepare other image files to show.
+You are also able to change the palameter of the window size. Change these values and Save, Run again.</p>
+<p>Next editing operation is to add codes of exit with pressing ESC key. It makes the program stop easily.</p>
+<pre class="hljs"><code><div>require 'dxruby'
+image = Image.load('data.png')  # loading the 'data.png'
+Window.width=640;Window.height=480  # Window settings
+Window.loop do
+  exit if Input.key_down?(K_ESCAPE)
+  Window.draw(100, 100, image)  # draw the image at (100,100)
+end
+</div></code></pre>
+<p>The above examples are simply show the image data. Next example is to control the position of the image.</p>
+<p>At first, change the line of &quot;Window.draw(100,100...)&quot; to &quot;Window.draw(x, y, image)
+and add other codes before drawing.
+dx and dy is difference of x and y, and they are controlled by button or game controller.</p>
+<pre class="hljs"><code><div>require 'dxruby'
+image = Image.load('data.png')  # loading the 'data.png'
+Window.width=640;Window.height=480  # Window settings
+x=0;y=0 #Declare the variables
+Window.loop do
+  exit if Input.key_down?(K_ESCAPE)
+  dx = Input.x  # difference of x axis
+  dy = Input.y  # difference of y axis
+
+  if Input.pad_down?(P_BUTTON0) then  # z key or Geme pad button 0
+    dx = dx * 2
+    dy = dy * 2
+  end
+
+  x = x + dx
+  y = y + dy
+  Window.draw(x, y, image) 
+end
+</div></code></pre>
+<h3 id="play-wave-sound">Play Wave Sound</h3>
+<p>Copy and Paste the files of</p>
+<ul>
+<li>Ring10.wav</li>
+<li>town.mid
+from the Workshop folder to your working folder.</li>
+</ul>
+<p>You can copy these files from &quot;C:\Windows\Media&quot;.<br>
+Run next code with appropreate name like &quot;2_sound.rb&quot;</p>
+<pre class="hljs"><code><div>require 'dxruby'
+
+sound = Sound.new(&quot;Ring10.wav&quot;)  # wave file
+bgm = Sound.new(&quot;town.mid&quot;)  # MIDI file
+
+# bgm.play
+
+Window.loop do
+  if Input.key_push?(K_Z) then  # Z key for play
+    sound.play
+  end
+end
+</div></code></pre>
+<h2 id="using-sprite">Using Sprite</h2>
+<p>This section is based on <a href="https://mirichi-github-io.translate.goog/dxruby-doc/tutorial/sprite.html?_x_tr_sl=ja&amp;_x_tr_tl=en&amp;_x_tr_hl=ja&amp;_x_tr_pto=wapp">Tutorial for using Sprite</a> mentioned above.<br>
+Let's start to using Sprite.
+DXRuby support sprite function. It allows to draw several image/pictures with high speed rendering.<br>
+Copy &amp; paste these code and save as &quot;3_sprite.rb&quot;</p>
+<pre class="hljs"><code><div>require 'dxruby'
+
+s = Sprite.new(100, 100, Image.new(100, 100, C_WHITE))
+dx = 2
+Window.loop do
+  exit if Input.key_down?(K_ESCAPE)
+  s.x += dx
+  if s.x&lt;0 or s.x&gt;Window.width - 100 then dx*=-1 end
+  s.draw
+end
+</div></code></pre>
+<p>The white cube simply bouces.<br>
+Try to check to draw several sprites simulteneously with next sample code.</p>
+<pre class="hljs"><code><div>require 'dxruby'
+
+image = Image.new(100, 100, C_WHITE)
+s1 = Sprite.new(0, 0, image)
+s2 = Sprite.new(200, 0, image)
+dx = 2; dy = 2
+Window.loop do
+  exit if Input.key_down?(K_ESCAPE)
+  s1.x += dx
+  s2.y += dy
+  if s1.x&lt;0 or s1.x&gt;Window.width - 100 then dx*=-1 end
+  if s2.y&lt;0 or s2.y&gt;Window.height - 100 then dy*=-1 end
+  s1.draw
+  s2.draw
+end
+</div></code></pre>
+<p>Sprite also has rotate effect. Try the nexe code.</p>
+<pre class="hljs"><code><div>require 'dxruby'
+
+s = Sprite.new(100, 100, Image.new(100, 100, C_WHITE))
+dt = 2
+Window.loop do
+  exit if Input.key_down?(K_ESCAPE)
+  s.angle += dt
+  if s.angle&lt;0 or s.angle &gt; 270 then dt*=-1 end
+  s.draw
+end
+</div></code></pre>
+<h2 id="using-sprite-with-class">Using Sprite with Class</h2>
+<p>It is little bit difficult part, but worth to try. let's enjoy Object Oriented Programming, OOP.<br>
+The class is a kind of blueprint of an OBJECT. We call all object as &quot;instance.&quot; <br>
+The object/instance has 'data' and 'method.' <br>
+It means the objects KNOW what they can (using the methods) and only things human/programmer can do is that ask the object to do something.<br>
+To prepare the class, you can make a code using</p>
+<ul>
+<li>class Class_name....end</li>
+</ul>
+<p>statement. This is the blueprint of the instance, and describing &quot;Class_name.new&quot; in the program means producing an instance of this Class.<br>
+The Class can inherit its definition of data and method to another child class using &quot;&lt;&quot; mark.<br>
+Try to run the next code and learn how it works.</p>
+<pre class="hljs"><code><div>require 'dxruby'
+
+class MySprite &lt; Sprite #MySprite inherits the all definition of Sprite Class.
+  @@image = Image.new(100, 100, C_WHITE)
+  attr_accessor :dx # define a variable of dx and it can be accessed from outside.
+
+  def initialize(init_x = 100 , init_y = 100, dx = 2)
+    super
+    self.x = init_x
+    self.y = init_y
+    self.image = @@image
+    self.dx = dx
+  end
+
+  def update
+    self.x += self.dx
+    if self.x&lt;0 or self.x&gt;Window.width - 100 then self.dx*=-1 end
+  end
+end
+
+s = MySprite.new(100,100,2)
+
+Window.loop do
+  exit if Input.key_down?(K_ESCAPE)
+  s.update
+  s.draw
+end
+</div></code></pre>
+<p>I hope you can understand how the Sprite Class works here, and as a next step, make the sprite to array. <br>
+Just append sprites to one array, and use the class method &quot;update&quot; to update all elements in the array.</p>
+<pre class="hljs"><code><div>require 'dxruby'
+
+class MySprite &lt; Sprite
+  @@image = Image.new(100, 100, C_WHITE)
+  attr_accessor :dx
+
+  def initialize(init_x = 100 , init_y = 100, dx = 2)
+    super
+    self.x = init_x
+    self.y = init_y
+    self.image = @@image
+    self.dx = dx
+  end
+
+  def update
+    self.x += self.dx
+    if self.x&lt;0 or self.x&gt;Window.width - 100 then self.dx*=-1 end
+  end
+end
+
+#This line should be changed
+s = [MySprite.new(100,100,2), MySprite.new(200,200,7)]
+
+Window.loop do
+  exit if Input.key_down?(K_ESCAPE)
+#Next two line should be changed
+  Sprite.update(s)
+  Sprite.draw(s)
+end
+</div></code></pre>
+<h2 id="shooting-missile">Shooting Missile</h2>
+<p>Next example is Shooting Missile from image data.<br>
+Whenever the user press a space bar, a Missile object is produced and automatically move to up.</p>
+<pre class="hljs"><code><div>require 'dxruby'
+
+class MySprite &lt; Sprite
+  @@image = Image.load('data.png') 
+  def initialize(init_x = 300 , init_y = 350)
+    super
+    self.x = init_x
+    self.y = init_y
+    self.image = @@image
+  end
+
+  def update
+    self.x += Input.x * 2
+    self.x=0 if self.x&lt;0 ; self.x=550 if self.x&gt;550
+  end
+end
+
+class Missile &lt; Sprite
+    @@image = Image.new(20, 50, C_YELLOW)
+    attr_accessor :dy
+    def initialize(init_x,init_y,dy=4)
+        super
+        self.x = init_x
+        self.y = init_y
+        self.image = @@image
+        self.dy = dy
+    end
+
+    def update
+        self.y -= dy
+        if self.y &lt; -50 then
+            self.vanish
+        end
+    end
+end
+
+s = [MySprite.new()]
+
+Window.loop do
+  exit if Input.key_down?(K_ESCAPE)
+  if Input.key_push?(K_SPACE) then 
+    s.append(Missile.new(s[0].x+35, s[0].y),8) 
+  end
+  Sprite.update(s)
+  Sprite.draw(s)
+end
+</div></code></pre>
+<h2 id="collision">Collision</h2>
+<p>Collision detection works with &quot;Sprite.check()&quot; method.<br>
+Precise information is described the section of <a href="https://mirichi-github-io.translate.goog/dxruby-doc/tutorial/sprite.html?_x_tr_sl=ja&amp;_x_tr_tl=en&amp;_x_tr_hl=ja&amp;_x_tr_pto=wapp#AUTOINDEXANCHOR_9">Collision detection</a> in the official tutorial.</p>
+<pre class="hljs"><code><div>require 'dxruby'
+
+class MySprite &lt; Sprite
+  @@image = Image.load('data.png') 
+  def initialize(init_x = 300 , init_y = 350)
+    super
+    self.x = init_x
+    self.y = init_y
+    self.image = @@image
+  end
+
+  def update
+    self.x += Input.x * 2
+    self.x=0 if self.x&lt;0 ; self.x=550 if self.x&gt;550
+  end
+end
+
+class Missile &lt; Sprite
+    @@image = Image.new(20, 50, C_YELLOW)
+    attr_accessor :dy
+    def initialize(init_x,init_y,dy=4)
+        super
+        self.x = init_x
+        self.y = init_y
+        self.image = @@image
+        self.dy = dy
+    end
+
+    def update
+        self.y -= dy
+        if self.y &lt; -50 then
+            self.vanish
+        end
+    end
+
+  def shot
+    self.vanish
+  end
+end
+
+class Box &lt; Sprite
+    @@image = Image.new(70, 70, C_WHITE)
+      def initialize
+    super
+    self.x = rand(570)
+    self.y = -70
+    @dx = rand(2) * 2 - 1
+    @dy = 2
+    self.image = @@image
+  end
+  
+  def update
+    self.x += @dx
+    self.y += @dy
+    if self.y &gt; Window.height then self.vanish end
+  end
+
+  def hit
+    self.vanish
+  end
+end
+
+s = [MySprite.new()]
+missiles = []
+enemies = [Box.new]
+Window.loop do
+  exit if Input.key_down?(K_ESCAPE)
+  if Input.key_push?(K_SPACE) || Input.pad_down?(P_BUTTON0) then
+    missiles.append(Missile.new(s[0].x+35, s[0].y),8) 
+  end
+  if rand(60)==0 then enemies.append(Box.new) end
+  Sprite.update(s)
+  Sprite.update(missiles)
+  Sprite.update(enemies)
+  Sprite.draw(s)
+  Sprite.draw(missiles)
+  Sprite.draw(enemies)
+  Sprite.check(missiles, enemies)
+end
+</div></code></pre>
+<p>Now you can make simple shooting-ish game. <br>
+Try to customize the code with:</p>
+<ul>
+<li>Changing image</li>
+<li>Adding Sound</li>
+<li>Implementing scoring system</li>
+<li>Implementing destroyed function of player's character</li>
+</ul>
+<p>and Enjoy.</p>
+
+</body>
+</html>
